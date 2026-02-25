@@ -68,4 +68,16 @@ class ArticleController extends Controller
         $article->delete();
         return redirect()->route('articles.index');
     }
+
+    /**
+     * Developer 7 Task: Publish article feature
+     * Updates the status of a specific article to 'published'
+     */
+    public function publish(Article $article)
+    {
+        $article->update(['status' => 'published']);
+
+        return redirect()->route('articles.index')
+            ->with('success', 'Article has been published!');
+    }
 }
