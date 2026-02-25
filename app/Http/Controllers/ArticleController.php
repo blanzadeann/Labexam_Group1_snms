@@ -14,6 +14,24 @@ class ArticleController extends Controller
         return view('articles.index', compact('articles'));
     }
 
+    public function search(Request $request)
+    {
+        $searchQuery = $request->input('query');
+
+        if (empty($searchQuery)) {
+            return redirect()->route('articles.index');
+        }
+
+        $articles = Article::with('category')
+                           ->where('title', 'LIKE', "%{$searchQuery}%")
+                           ->orWhere('author_email', 'LIKE', "%{$searchQuery}%")
+                           ->orWhere('body', 'LIKE', "%{$searchQuery}%")
+                           ->latest()
+                           ->get();
+
+        return view('articles.index', compact('articles'));
+    }
+
     public function create()
     {
         $categories = Category::all();
