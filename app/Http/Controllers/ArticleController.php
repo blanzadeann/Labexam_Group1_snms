@@ -68,4 +68,31 @@ class ArticleController extends Controller
         $article->delete();
         return redirect()->route('articles.index');
     }
+
+    /**
+     * Developer 7 Task: Publish article feature
+     * Updates the status of a specific article to 'published'
+     */
+    public function filter(Request $request)
+{
+    $query = Article::query();
+
+    if ($request->filled('category_id')) {
+        $query->where('category_id', $request->category_id);
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $articles = $query->with('category')->latest()->get();
+
+    return response()->json($articles);
+}
+
+    public function publish(Article $article)
+    {
+        $article->update(['status' => 'published']);
+        return response()->json(['message' => 'Article published successfully']);
+    }
 }

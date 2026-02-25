@@ -9,10 +9,17 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
 
-route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::patch('/articles/{article}/publish', [ArticleController::class, 'publish']);
 });
 
-Route::apiResource('articles', ArticleController::class);
+Route::get('/articles/filter', [ArticleController::class, 'filter']);
+
+
+Route::resource('articles', ArticleController::class);
+
+Route::patch('/articles/{article}/publish', [ArticleController::class, 'publish'])
+    ->name('articles.publish');
