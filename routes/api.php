@@ -9,10 +9,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
 
-route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    
+    // Developer 7: Publish article feature endpoint
+    // We use PATCH because we are only updating the 'status' field
+    Route::patch('/articles/{article}/publish', [ArticleController::class, 'publish']);
 });
 
+// Developer 6: Article CRUD API
 Route::apiResource('articles', ArticleController::class);
