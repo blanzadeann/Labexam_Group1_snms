@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CategoryController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -20,6 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Developer 6: Full CRUD
     // This handles GET, POST, PUT, DELETE for /api/articles
     Route::apiResource('articles', ArticleController::class);
+
+    Route::apiResource('categories', CategoryController::class);
 });
 
 // Optional: If you want search to be public
