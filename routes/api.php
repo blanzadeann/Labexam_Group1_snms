@@ -23,5 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/articles/{article}/publish', [ArticleController::class, 'publish']);
     
     Route::apiResource('articles', ArticleController::class);
-    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('category', CategoryController::class);
 });
