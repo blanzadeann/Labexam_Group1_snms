@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
 {
     Schema::create('articles', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('category_id')->constrained()->onDelete('cascade');
-        $table->string('title');
-        $table->text('body');
-        $table->string('author_email');
-        $table->string('image_url')->nullable();
-        $table->enum('status', ['published', 'draft'])->default('draft');
-        $table->timestamps();
-    });
+    $table->id();
+    // Use foreignId for automatic type matching
+    $table->foreignId('category_id')->constrained()->onDelete('cascade'); 
+    $table->string('title');
+    $table->text('body');
+    $table->string('author_email');
+    $table->string('image_url')->nullable();
+    $table->string('status')->default('draft');
+    $table->timestamps();
+});
 }
 
     /**

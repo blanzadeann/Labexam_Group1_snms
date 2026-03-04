@@ -11,7 +11,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::with('category')->latest()->get();
-        return view('articles.index', compact('articles'));
+        return response()->json($articles);
     }
 
     public function search(Request $request)
@@ -19,23 +19,17 @@ class ArticleController extends Controller
         $searchQuery = $request->input('query');
 
         if (empty($searchQuery)) {
-            return redirect()->route('articles.index');
+            return response()->json(['message' => 'Query is empty'], 400);
         }
 
         $articles = Article::with('category')
-                           ->where('title', 'LIKE', "%{$searchQuery}%")
-                           ->orWhere('author_email', 'LIKE', "%{$searchQuery}%")
-                           ->orWhere('body', 'LIKE', "%{$searchQuery}%")
-                           ->latest()
-                           ->get();
+            ->where('title', 'LIKE', "%{$searchQuery}%")
+            ->orWhere('author_email', 'LIKE', "%{$searchQuery}%")
+            ->orWhere('body', 'LIKE', "%{$searchQuery}%")
+            ->latest()
+            ->get();
 
-        return view('articles.index', compact('articles'));
-    }
-
-    public function create()
-    {
-        $categories = Category::all();
-        return view('articles.create', compact('categories'));
+        return response()->json($articles);
     }
 
     public function store(Request $request)
@@ -49,20 +43,17 @@ class ArticleController extends Controller
             'status' => 'required|in:published,draft',
         ]);
 
-        Article::create($validated);
+        $article = Article::create($validated);
 
-        return redirect()->route('articles.index');
+        return response()->json([
+            'message' => 'Article created successfully',
+            'data' => $article
+        ], 201);
     }
 
     public function show(Article $article)
     {
-        return view('articles.show', compact('article'));
-    }
-
-    public function edit(Article $article)
-    {
-        $categories = Category::all();
-        return view('articles.edit', compact('article', 'categories'));
+        return response()->json($article->load('category'));
     }
 
     public function update(Request $request, Article $article)
@@ -78,24 +69,25 @@ class ArticleController extends Controller
 
         $article->update($validated);
 
-        return redirect()->route('articles.index');
+        return response()->json([
+            'message' => 'Article updated successfully',
+            'data' => $article
+        ]);
     }
 
     public function destroy(Article $article)
     {
         $article->delete();
-        return redirect()->route('articles.index');
+        return response()->json(['message' => 'Article deleted successfully']);
     }
 
-    /**
-     * Developer 7 Task: Publish article feature
-     * Updates the status of a specific article to 'published'
-     */
     public function publish(Article $article)
     {
         $article->update(['status' => 'published']);
 
-        return redirect()->route('articles.index')
-            ->with('success', 'Article has been published!');
+        return response()->json([
+            'message' => 'Article has been published!',
+            'data' => $article
+        ]);
     }
 }
