@@ -4,17 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 
-class PublicNewsController extends Controller
+class PublicArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::where('status', 'published')
-                            ->latest()
-                            ->get();
+        $articles = Article::with('category')
+            ->where('status', 'published')
+            ->latest()
+            ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $articles
-        ]);
+        return response()->json($articles);
     }
 }
